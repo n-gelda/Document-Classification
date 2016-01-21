@@ -5,15 +5,15 @@ import re
 from pprint import pprint
 
 ''' Returns freq and posSize Dict containing all categories embedded as sub dictionaries '''
-def getFreqData():
+def getData():
     freqDict = dict() # Struct: dict -> dict
     posSizeDict = dict() # Struct: dict -> 1Dlist -> 1Dlist
 
     for curCategory in os.listdir(os.chdir('OCR Results')):
         if curCategory.endswith("#"):
-            print(curCategory)
             freqDict[curCategory], posSizeDict[curCategory] = getDictForCategory(curCategory)
 
+    os.chdir('..')
     return freqDict, posSizeDict
 
 
@@ -39,9 +39,11 @@ def convert2FreqDict(jsonDict, freqDict):
 
     for i in range(0, length):
         tempKey = words[i]['value']
-        key = re.sub(r'[^a-zA-Z0-9 ]', r'', tempKey.lower())  # discard all special char
+        key = re.sub(r'[^a-zA-Z0-9]', r'', tempKey.lower())  # discard all special char
         freqDict[key] = freqDict.get(key, 0) + 1
 
+    if '' in freqDict: # remove '' as words from dict (some single char may be converted to just '')
+        del freqDict['']
     return freqDict
 
 ''' Given a jsonDict, it adds the size and position data into posSize '''
@@ -60,9 +62,4 @@ def convert2posSizeList(jsonDict, posSizeList2D):
 
     return posSizeList2D
 
-freq_dict = dict()
-posSize_dict = dict()
-freq_dict, posSize_dict = getFreqData()
-
-pprint(posSize_dict)
 
