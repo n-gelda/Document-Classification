@@ -62,4 +62,11 @@ def convert2posSizeList(jsonDict, posSizeList2D):
 
     return posSizeList2D
 
+def getSingleFreqDict(filePath):
+    singleFreqDict = dict()
+    singleDict = dict()
+    with open(filePath) as data_file:
+            jsonDict = json.load(data_file)
+            freqDict = convert2FreqDict(jsonDict, singleFreqDict)
 
+    return singleFreqDict

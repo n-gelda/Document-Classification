@@ -10,15 +10,28 @@ import collections
 
 import readData
 import processWords
+import os
 
 freq_dict = dict()
 posSize_dict = dict()
 
-freq_dict, posSize_dict = readData.getData()
+# freq_dict, posSize_dict = readData.getData()
+#
+# freq_dict = processWords.filterTrashWords(freq_dict)
 
-freq_dict = processWords.filterTrashWords(freq_dict)
 
-
+for curCategory in os.listdir(os.chdir('input_files')):
+    if curCategory.endswith("#"):
+        for j in os.listdir(os.chdir(curCategory)):
+            if j.endswith(".json"):
+                freqDict = readData.getSingleFreqDict(j)
+                #print(os.getcwd())
+                os.chdir('..')
+                os.chdir('..') #one of these will go in production code
+                freqDict = processWords.removeTrashWords(freqDict)
+                os.chdir('input_files/'+curCategory)
+                print(curCategory,':',j,':',freqDict)
+        os.chdir('..')
 
 
 # sum = 0
@@ -41,4 +54,4 @@ freq_dict = processWords.filterTrashWords(freq_dict)
 
 
 print('\n')
-print('hello you both are stud!')
+print('hello, you both are studs!')
