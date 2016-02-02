@@ -1,5 +1,55 @@
 ''' Handles the computation of key words per category and the non-relevant words '''
 import re
+import numpy as np
+import os
+import json
+import math
+import time
+
+
+''' COMPUTE TF-IDF '''
+
+def computeTFIDF (freq_dict, wordMapDict, numOfFile):
+    tfidf_dict = dict()
+
+    for category in freq_dict:
+
+        tfidf_singleCategory_dict = dict()
+        for word in freq_dict[category]:
+
+            tf = math.log(freq_dict[category][word], 3)
+
+            idf = computeIDF(word, wordMapDict, numOfFile)
+
+            tfidf_singleCategory_dict[word] = tf * idf
+
+        tfidf_dict[category] = tfidf_singleCategory_dict
+
+    return tfidf_dict
+
+def computeIDF(word, wordMapDict, N):
+
+    df = 0
+
+    for category in wordMapDict:
+        for file in wordMapDict[category]:
+            if word in wordMapDict[category][file]:
+                df += 1
+
+
+    if df == 0:
+        return 0
+    else:
+        idf = math.log(N/df, 10)
+
+        if word == 'the':
+            print(idf)
+        return idf
+
+''' //compute TF-IDF end// '''
+
+
+##########################################################
 
 ''' takes in freq_dict, and returns a dict within a dict of top ranking words per category, and returns freq_dict without the trash words '''
 def filterTrashWords (freq_dict):
@@ -51,6 +101,15 @@ def top100 (filePath):
             temp = line.split()
             top100[temp[0]] = temp[1]
     return top100
+
+''' apply a threshold that removes all word with word freq below the mean '''
+def applyMeanThreshold (freq_dict):
+    for category in freq_dict:
+        curCatAvg = np.mean(list(freq_dict[category].values()))
+
+        # for word in freq_dict[category]:
+        #     if freq_dict[category][word] > curCatAvg:
+
 
 
 
